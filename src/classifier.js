@@ -1,3 +1,5 @@
+var input = require('./inputs/input')
+
 /**
  * This is the entry point to the program
  *
