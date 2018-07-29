@@ -6,7 +6,7 @@ Write a program that classifies the students into groups where
 
 1. Each group has a maximum of 3 students.
 2. No student is in more than 1 group.
-3. The difference in years of the ages of student in any particular group is not more than 5. \*
+3. The difference in years of the ages of student in any particular group is not more than 5.
 
 `Your solution should include in its output`
 
