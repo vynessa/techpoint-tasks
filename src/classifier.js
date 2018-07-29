@@ -22,6 +22,7 @@ const classifier = (input) => {
   const sortAge = (input) => {
     Object.keys(input).forEach((student, index) => {
       input[student].age = getAge(input[student].dob)
+      delete(input[student].dob);
     })
     return input.sort((prev, next) => {
       return prev.age - next.age;
