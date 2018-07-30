@@ -54,6 +54,47 @@ const classifier = (input) => {
       delete(student.regNo) });
     return group
   }
+
+  const sortGroups = (start, finish) => {
+    if ((finish[1] && finish[1].age - start) < 5 ) {
+      return 2;
+    }
+    if ((finish[0] && finish[0].age - start) < 5 ) {
+      return 1;
+    }
+    return -1;
+  }
+
+  const groupData = (sortedData) => {
+    let groupCount = 1
+    let chunks = {};
+
+    for(let c = 0; c < sortedData.length; c++) {
+      chunks.noOfGroups = Object.keys(chunks).length
+      const firstIndex = c + 1;
+      const secondIndex = c + 2;
+      const groupMembers = sortGroups(sortedData[c].age, [ 
+                              sortedData[firstIndex], 
+                              sortedData[secondIndex]
+                            ]);
+      if(groupMembers === 2) {
+        data = [sortedData[c], sortedData[firstIndex], sortedData[secondIndex]];
+        chunks[`group${groupCount++}`] = groupMembersMetadata(data)
+        c += 2;
+      }
+      if(groupMembers === 1) {
+        data = [sortedData[c], sortedData[firstIndex]];
+        chunks[`group${groupCount++}`] = groupMembersMetadata(data)
+        c +=1;
+      } 
+      if (groupMembers === -1) {  
+        data = [sortedData[c]];
+        chunks[`group${groupCount++}`] = groupMembersMetadata(data)
+      }
+    }
+    return chunks
+  }
+
 };
 
 classifier = JSON.stringify(classifier(input), null, 2);
