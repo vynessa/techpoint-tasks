@@ -1,5 +1,3 @@
-var input = require('./inputs/input')
-
 /**
  * This is the entry point to the program
  *
@@ -16,22 +14,19 @@ const classifier = (input) => {
   }
 
   const getAge = (birthDay) => {
-    var today = new Date();
-    var birthDate = new Date(birthDay);
-    var age = today.getFullYear() - birthDate.getFullYear();
-    var month = today.getMonth() - birthDate.getMonth();
-    if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-      age--
-    } 
+    const today = new Date();
+    const birthDate = new Date(birthDay);
+    const age = today.getFullYear() - birthDate.getFullYear();
     return age;
   }
 
   const sortByAge = (input) => {
-    Object.keys(input).forEach((student, index) => {
-      input[student].age = getAge(input[student].dob)
-      delete(input[student].dob);
+    const newInput = input.map((student) => {
+      let studentObj = { ...student }
+      studentObj.age = getAge(student.dob);
+      return studentObj;
     })
-    return input.sort((prev, next) => {
+    return newInput.sort((prev, next) => {
       return prev.age - next.age;
     });
   }
@@ -47,19 +42,17 @@ const classifier = (input) => {
     membersAges = group.members.map((student) => student.age);
     group.oldest = Math.max(...membersAges);
     group.sum = membersAges.reduce((acc, cur) => (acc + cur));
-    group.regNos = group.members.map((student) => student.regNo).sort(
+    group.regNos = group.members.map((student) => Number(student.regNo)).sort(
       (prev, next) => (prev - next)
     );
-    group.members.forEach(student => { 
-      delete(student.regNo) });
     return group
   }
 
   const sortGroups = (start, finish) => {
-    if ((finish[1] && finish[1].age - start) < 5 ) {
+    if ((finish[1] && finish[1].age - start) <= 5 ) {
       return 2;
     }
-    if ((finish[0] && finish[0].age - start) < 5 ) {
+    if ((finish[0] && finish[0].age - start) <= 5 ) {
       return 1;
     }
     return -1;
@@ -70,7 +63,6 @@ const classifier = (input) => {
     let chunks = {};
 
     for(let c = 0; c < sortedData.length; c++) {
-      chunks.noOfGroups = Object.keys(chunks).length
       const firstIndex = c + 1;
       const secondIndex = c + 2;
       const groupMembers = sortGroups(sortedData[c].age, [ 
@@ -92,6 +84,7 @@ const classifier = (input) => {
         chunks[`group${groupCount++}`] = groupMembersMetadata(data)
       }
     }
+    chunks.noOfGroups = Object.keys(chunks).length
     return chunks
   }
 
@@ -103,13 +96,11 @@ const classifier = (input) => {
       return groupData(sortedInput);
     }
     catch(error) {
-      return error;
+      throw error;
     }
   }
 
   return getClassifiedStudents(input)
 };
-
-classifier = JSON.stringify(classifier(input), null, 2);
 
 module.exports = classifier;
