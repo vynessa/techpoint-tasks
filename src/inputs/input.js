@@ -40,7 +40,7 @@ const input = [
     regNo: '120',
   },
   {
-    name: 'Louis', //
+    name: 'Louis',
     dob: '1892-08-15T00:00:00.000Z',
     regNo: '022',
   },
@@ -78,7 +78,7 @@ const input = [
     name: 'Charles',
     dob: '1868-02-14T00:00:00.000Z',
     regNo: '091',
-  },
+  }
 ];
 
 module.exports = input;
