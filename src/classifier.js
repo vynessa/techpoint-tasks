@@ -10,7 +10,7 @@ const classifier = (input) => {
   //Your code should go here
   const validateInput = () => {
     if(!Array.isArray(input)) {
-      throw"Invalid Type. Please enter an Array";
+      throw "Invalid Type. Please enter an Array";
     }
     return true;
   }
@@ -95,6 +95,19 @@ const classifier = (input) => {
     return chunks
   }
 
+  const getClassifiedStudents = (input) => {
+    try {
+      validateInput()
+      if (input.length === 0)  { return {noOfGroups: 0} }
+      const sortedInput = sortByAge(input)
+      return groupData(sortedInput);
+    }
+    catch(error) {
+      return error;
+    }
+  }
+
+  return getClassifiedStudents(input)
 };
 
 classifier = JSON.stringify(classifier(input), null, 2);
