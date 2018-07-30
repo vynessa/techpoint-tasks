@@ -63,8 +63,15 @@ Object.freeze(MORSE_CODE);
  *
  * @param {string} morseCode The string to decode.
  */
-function decodeMorse(morseCode) {
+const decodeMorse = (morseCode) => {
   // Your code should go here.
+  let result = ""
+  const splitMorseString = morseCode.split(" ")
+  for (i = 0; i < splitMorseString.length; i++) {
+    result += MORSE_CODE[`${splitMorseString[i]}`]
+  }
+
+  return result
 }
 
 module.exports = decodeMorse;
