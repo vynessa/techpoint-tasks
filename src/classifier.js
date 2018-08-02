@@ -8,27 +8,28 @@ const classifier = (input) => {
   //Your code should go here
   const validateInput = () => {
     if(!Array.isArray(input)) {
-      throw "Invalid Type. Please enter an Array";
+      throw TypeError("Invalid Type. Please enter an Array");
     }
     return true;
   }
 
-  const getAge = (birthDay) => {
+  const getStudentAge = (birthDay) => {
     const today = new Date();
     const birthDate = new Date(birthDay);
     const age = today.getFullYear() - birthDate.getFullYear();
     return age;
   }
 
-  const sortByAge = (input) => {
+  const sortStudentsByAge = (input) => {
     const newInput = input.map((student) => {
       let studentObj = { ...student }
-      studentObj.age = getAge(student.dob);
+      studentObj.age = getStudentAge(student.dob);
       return studentObj;
-    })
-    return newInput.sort((prev, next) => {
-      return prev.age - next.age;
-    });
+    }).sort((prev, next) => 
+      prev.age - next.age
+    );
+
+    return newInput
   }
 
   const groupMembersMetadata = (members) => {
@@ -38,34 +39,49 @@ const classifier = (input) => {
       sum: 0,
       regNos: []
     }
-    members.forEach(student => { group.members.push(student) });
-    membersAges = group.members.map((student) => student.age);
-    group.oldest = Math.max(...membersAges);
-    group.sum = membersAges.reduce((acc, cur) => (acc + cur));
-    group.regNos = group.members.map((student) => Number(student.regNo)).sort(
-      (prev, next) => (prev - next)
-    );
+
+    members.map(student => { 
+      group.members.push(student)
+      group.oldest = Math.max(student.age)
+      group.sum += student.age
+      group.regNos.push(Number(student.regNo));
+      group.regNos = group.regNos.sort(
+                        (prev, next) => (prev - next)
+                      )
+    });
+
     return group
   }
 
-  const sortGroups = (start, finish) => {
-    if ((finish[1] && finish[1].age - start) <= 5 ) {
-      return 2;
+  const sortStudentsInGroups = (currStudent, arrOfNextTwoStudents) => {
+    const position1 = 0;
+    const position2 = 1;
+
+    const twoMembers = 2;
+    const oneMember = 1;
+    const noMember = -1;
+ 
+    if ((arrOfNextTwoStudents[position2] 
+          && arrOfNextTwoStudents[position2].age - currStudent.age) <= 5 ) {
+      return twoMembers;
     }
-    if ((finish[0] && finish[0].age - start) <= 5 ) {
-      return 1;
+    else if ((arrOfNextTwoStudents[position1] 
+      && arrOfNextTwoStudents[position1].age - currStudent.age) <= 5 ) {
+      return oneMember;
     }
-    return -1;
+    return noMember;
   }
 
   const groupData = (sortedData) => {
     let groupCount = 1
     let chunks = {};
+    chunks.noOfGroups = 0;
 
     for(let c = 0; c < sortedData.length; c++) {
+      chunks.noOfGroups = Object.keys(chunks).length
       const firstIndex = c + 1;
       const secondIndex = c + 2;
-      const groupMembers = sortGroups(sortedData[c].age, [ 
+      const groupMembers = sortStudentsInGroups(sortedData[c], [ 
                               sortedData[firstIndex], 
                               sortedData[secondIndex]
                             ]);
@@ -84,15 +100,14 @@ const classifier = (input) => {
         chunks[`group${groupCount++}`] = groupMembersMetadata(data)
       }
     }
-    chunks.noOfGroups = Object.keys(chunks).length
     return chunks
   }
 
   const getClassifiedStudents = (input) => {
     try {
       validateInput()
-      if (input.length === 0)  { return {noOfGroups: 0} }
-      const sortedInput = sortByAge(input)
+      if (input.length === 0)  { return { noOfGroups: 0 } }
+      const sortedInput = sortStudentsByAge(input)
       return groupData(sortedInput);
     }
     catch(error) {
