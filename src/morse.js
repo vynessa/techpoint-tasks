@@ -68,7 +68,7 @@ const decodeMorse = (morseCode) => {
   // Your code should go here.
   try {
     if(typeof morseCode !== 'string') {
-      throw 'Please enter a string';
+      throw TypeError("Please enter a string");
     }
     if(!morseCode.length) return '';
     morseCode = morseCode.trim();
@@ -97,4 +97,3 @@ const decodeMorse = (morseCode) => {
 };
 
 module.exports = decodeMorse;
-
